@@ -93,5 +93,6 @@ class AuditlogMiddleware(MiddlewareMixin):
                 and instance.actor is None
             ):
                 instance.actor = user
+                instance.actor_repr = str(user)
 
             instance.remote_addr = threadlocal.auditlog["remote_addr"]
