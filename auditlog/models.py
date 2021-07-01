@@ -22,8 +22,8 @@ class LogEntryManager(models.Manager):
 
     def log_create(self, instance, **kwargs):
         """
-        Helper method to create a new log entry. This method automatically populates some fields when no explicit value
-        is given.
+        Helper method to create a new log entry. This method automatically
+        populates some fields when no explicit value is given.
 
         :param instance: The model instance to log a change for.
         :type instance: Model
@@ -48,8 +48,8 @@ class LogEntryManager(models.Manager):
             if callable(get_additional_data):
                 kwargs.setdefault("additional_data", get_additional_data())
 
-            # Delete log entries with the same pk as a newly created model. This should only be necessary when an pk is
-            # used twice.
+            # Delete log entries with the same pk as a newly created model.
+            # This should only be necessary when a pk is used twice.
             if kwargs.get("action", None) is LogEntry.Action.CREATE:
                 if (
                     kwargs.get("object_id", None) is not None
@@ -162,7 +162,7 @@ class LogEntryManager(models.Manager):
         pk_field = instance._meta.pk.name
         pk = getattr(instance, pk_field, None)
 
-        # Check to make sure that we got an pk not a model object.
+        # Check to make sure that we got a pk not a model object.
         if isinstance(pk, models.Model):
             pk = self._get_pk_value(pk)
         return pk
@@ -223,6 +223,9 @@ class LogEntry(models.Model):
         null=True,
         related_name="+",
         verbose_name=_("actor"),
+    )
+    actor_repr = models.CharField(
+        max_length=255, blank=True, verbose_name=_("actor representation")
     )
     remote_addr = models.GenericIPAddressField(
         blank=True, null=True, verbose_name=_("remote address")
