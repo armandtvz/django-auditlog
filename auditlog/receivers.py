@@ -2,6 +2,7 @@ import json
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
+from auditlog.signals import created_log
 
 
 def log_create(sender, instance, created, **kwargs):
@@ -17,6 +18,12 @@ def log_create(sender, instance, created, **kwargs):
             instance,
             action=LogEntry.Action.CREATE,
             changes=json.dumps(changes),
+        )
+        # TODO DRY
+        created_log.send(
+            sender=self.__class__,
+            instance=instance,
+            log_instance=log_entry,
         )
 
 
@@ -43,6 +50,12 @@ def log_update(sender, instance, **kwargs):
                     action=LogEntry.Action.UPDATE,
                     changes=json.dumps(changes),
                 )
+                # TODO DRY
+                created_log.send(
+                    sender=self.__class__,
+                    instance=instance,
+                    log_instance=log_entry,
+                )
 
 
 def log_delete(sender, instance, **kwargs):
@@ -58,4 +71,10 @@ def log_delete(sender, instance, **kwargs):
             instance,
             action=LogEntry.Action.DELETE,
             changes=json.dumps(changes),
+        )
+        # TODO DRY
+        created_log.send(
+            sender=self.__class__,
+            instance=instance,
+            log_instance=log_entry,
         )
