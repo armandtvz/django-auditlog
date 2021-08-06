@@ -67,7 +67,7 @@ def get_field_value(obj, field):
                 value = timezone.make_naive(value, timezone=timezone.utc)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
-    elif instance(field, ForeignKey):
+    elif isinstance(field, ForeignKey):
         try:
             related_obj = getattr(obj, field.name, None)
             value = smart_str(related_obj.pk)
