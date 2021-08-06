@@ -67,12 +67,17 @@ def get_field_value(obj, field):
                 value = timezone.make_naive(value, timezone=timezone.utc)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
+
     elif isinstance(field, ForeignKey):
         try:
             related_obj = getattr(obj, field.name, None)
-            value = smart_str(related_obj.pk)
+            if related_obj:
+                value = smart_str(related_obj.pk)
+            else:
+                value = smart_str(getattr(obj, field.name, None))
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
+            
     else:
         try:
             value = smart_str(getattr(obj, field.name, None))
