@@ -21,7 +21,7 @@ def log_create(sender, instance, created, **kwargs):
         )
         # TODO DRY
         log_created.send(
-            sender=self.__class__,
+            sender=LogEntry,
             instance=instance,
             log_instance=log_entry,
         )
@@ -52,7 +52,7 @@ def log_update(sender, instance, **kwargs):
                 )
                 # TODO DRY
                 log_created.send(
-                    sender=self.__class__,
+                    sender=LogEntry,
                     instance=instance,
                     log_instance=log_entry,
                 )
@@ -74,7 +74,7 @@ def log_delete(sender, instance, **kwargs):
         )
         # TODO DRY
         log_created.send(
-            sender=self.__class__,
+            sender=LogEntry,
             instance=instance,
             log_instance=log_entry,
         )
