@@ -1,4 +1,4 @@
 from django import dispatch
 
 
-created_log = dispatch.Signal()
+log_created = dispatch.Signal()
