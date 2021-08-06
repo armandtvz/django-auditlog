@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import NOT_PROVIDED, DateTimeField, Model
+from django.db.models import NOT_PROVIDED, DateTimeField, ForeignKey, Model
 from django.utils import timezone
 from django.utils.encoding import smart_str
 
@@ -65,6 +65,12 @@ def get_field_value(obj, field):
             value = field.to_python(getattr(obj, field.name, None))
             if value is not None and settings.USE_TZ and not timezone.is_naive(value):
                 value = timezone.make_naive(value, timezone=timezone.utc)
+        except ObjectDoesNotExist:
+            value = field.default if field.default is not NOT_PROVIDED else None
+    elif instance(field, ForeignKey):
+        try:
+            related_obj = getattr(obj, field.name, None)
+            value = smart_str(related_obj.pk)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
     else:
