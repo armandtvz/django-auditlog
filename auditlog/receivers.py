@@ -2,7 +2,6 @@ import json
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
-from auditlog.signals import log_created
 
 
 def log_create(sender, instance, created, **kwargs):
@@ -19,13 +18,7 @@ def log_create(sender, instance, created, **kwargs):
             action=LogEntry.Action.CREATE,
             changes=json.dumps(changes),
         )
-        # TODO DRY
-        log_created.send(
-            sender=LogEntry,
-            old_instance=None,
-            new_instance=instance,
-            log_instance=log_entry,
-        )
+
 
 def log_update(sender, instance, **kwargs):
     """
@@ -50,13 +43,6 @@ def log_update(sender, instance, **kwargs):
                     action=LogEntry.Action.UPDATE,
                     changes=json.dumps(changes),
                 )
-                # TODO DRY
-                log_created.send(
-                    sender=LogEntry,
-                    old_instance=old,
-                    new_instance=new,
-                    log_instance=log_entry,
-                )
 
 
 def log_delete(sender, instance, **kwargs):
@@ -73,12 +59,7 @@ def log_delete(sender, instance, **kwargs):
             action=LogEntry.Action.DELETE,
             changes=json.dumps(changes),
         )
-        log_created.send(
-            sender=LogEntry,
-            old_instance=instance,
-            new_instance=None,
-            log_instance=log_entry,
-        )
+
 
 def make_log_m2m_changes(field_name):
     """Return a handler for m2m_changed with field_name enclosed."""
