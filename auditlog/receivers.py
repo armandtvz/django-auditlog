@@ -73,11 +73,6 @@ def log_delete(sender, instance, **kwargs):
             action=LogEntry.Action.DELETE,
             changes=json.dumps(changes),
         )
-
-        # if hasattr(instance, 'org'):
-        #     print('post_delete - ' + instance._meta.model_name + ' - ' + str(instance.org))
-
-        # TODO DRY
         log_created.send(
             sender=LogEntry,
             old_instance=instance,
@@ -85,8 +80,32 @@ def log_delete(sender, instance, **kwargs):
             log_instance=log_entry,
         )
 
+def make_log_m2m_changes(field_name):
+    """Return a handler for m2m_changed with field_name enclosed."""
 
-def log_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
-    # if action not in ("post_add", "post_remove", "post_clear"):
-    #     return False
-    print('m2m_changed - ' + action + ' ' + str(instance))
+    def log_m2m_changes(signal, action, **kwargs):
+        """Handle m2m_changed and call LogEntry.objects.log_m2m_changes as needed."""
+        if action not in ["post_add", "post_clear", "post_remove"]:
+            return
+
+        if action == "post_clear":
+            changed_queryset = kwargs["model"].objects.all()
+        else:
+            changed_queryset = kwargs["model"].objects.filter(pk__in=kwargs["pk_set"])
+
+        if action in ["post_add"]:
+            LogEntry.objects.log_m2m_changes(
+                changed_queryset,
+                kwargs["instance"],
+                "add",
+                field_name,
+            )
+        elif action in ["post_remove", "post_clear"]:
+            LogEntry.objects.log_m2m_changes(
+                changed_queryset,
+                kwargs["instance"],
+                "delete",
+                field_name,
+            )
+
+    return log_m2m_changes
