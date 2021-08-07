@@ -87,4 +87,6 @@ def log_delete(sender, instance, **kwargs):
 
 
 def log_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    # if action not in ("post_add", "post_remove", "post_clear"):
+    #     return False
     print('m2m_changed - ' + action + ' ' + str(instance))

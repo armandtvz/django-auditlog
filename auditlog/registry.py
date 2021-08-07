@@ -126,9 +126,23 @@ class AuditlogModelRegistry(object):
         """
         for signal in self._signals:
             receiver = self._signals[signal]
-            signal.connect(
-                receiver, sender=model, dispatch_uid=self._dispatch_uid(signal, model)
-            )
+
+            if signal == m2m_changed:
+                fields = model._meta.get_fields()
+                for field in fields:
+                    # Reverse relations are auto_created
+                    # We don't want a signal on the reverse relation
+                    if field.many_to_many and not field.auto_created:
+                        descriptor = getattr(model, field.name)
+                        sender = getattr(descriptor, 'through')
+                        signal.connect(
+                            receiver, sender=sender, dispatch_uid=self._dispatch_uid(signal, model)
+                        )
+
+            else:
+                signal.connect(
+                    receiver, sender=model, dispatch_uid=self._dispatch_uid(signal, model)
+                )
 
     def _disconnect_signals(self, model):
         """
