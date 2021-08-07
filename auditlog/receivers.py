@@ -94,18 +94,34 @@ def make_log_m2m_changes(field_name):
             changed_queryset = kwargs["model"].objects.filter(pk__in=kwargs["pk_set"])
 
         if action in ["post_add"]:
-            LogEntry.objects.log_m2m_changes(
+            log_entry = LogEntry.objects.log_m2m_changes(
                 changed_queryset,
                 kwargs["instance"],
                 "add",
                 field_name,
             )
+            m2m_log_created.send(
+                sender=LogEntry,
+                instance=kwargs["instance"],
+                changed_queryset=changed_queryset,
+                action=action,
+                field_name=field_name,
+                log_instance=log_entry,
+            )
         elif action in ["post_remove", "post_clear"]:
-            LogEntry.objects.log_m2m_changes(
+            log_entry = LogEntry.objects.log_m2m_changes(
                 changed_queryset,
                 kwargs["instance"],
                 "delete",
                 field_name,
+            )
+            m2m_log_created.send(
+                sender=LogEntry,
+                instance=kwargs["instance"],
+                changed_queryset=changed_queryset,
+                action=action,
+                field_name=field_name,
+                log_instance=log_entry,
             )
 
     return log_m2m_changes
