@@ -128,16 +128,17 @@ class AuditlogModelRegistry(object):
             receiver = self._signals[signal]
 
             if signal == m2m_changed:
-                fields = model._meta.get_fields()
-                for field in fields:
-                    # Reverse relations are auto_created
-                    # We don't want a signal on the reverse relation
-                    if field.many_to_many and not field.auto_created:
-                        descriptor = getattr(model, field.name)
-                        sender = getattr(descriptor, 'through')
-                        signal.connect(
-                            receiver, sender=sender, dispatch_uid=self._dispatch_uid(signal, model)
-                        )
+                # fields = model._meta.get_fields()
+                # for field in fields:
+                #     # Reverse relations are auto_created
+                #     # We don't want a signal on the reverse relation
+                #     if field.many_to_many and not field.auto_created:
+                #         descriptor = getattr(model, field.name)
+                #         sender = getattr(descriptor, 'through')
+                #         signal.connect(
+                #             receiver, sender=sender, dispatch_uid=self._dispatch_uid(signal, model)
+                #         )
+                pass
 
             else:
                 signal.connect(
