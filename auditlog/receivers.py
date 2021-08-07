@@ -74,6 +74,7 @@ def log_delete(sender, instance, **kwargs):
             changes=json.dumps(changes),
         )
 
+        print('post_delete')
         if hasattr(instance, 'org'):
             print(instance.org)
 
@@ -87,5 +88,6 @@ def log_delete(sender, instance, **kwargs):
 
 
 def log_pre_delete(sender, instance, **kwargs):
+    print('pre_delete')
     if hasattr(instance, 'org'):
         print(instance.org)
