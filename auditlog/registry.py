@@ -21,7 +21,7 @@ class AuditlogModelRegistry(object):
         delete: bool = True,
         custom: Optional[Dict[ModelSignal, Callable]] = None,
     ):
-        from auditlog.receivers import log_create, log_delete, log_update, log_pre_delete
+        from auditlog.receivers import log_create, log_delete, log_update
 
         self._registry = {}
         self._signals = {}
