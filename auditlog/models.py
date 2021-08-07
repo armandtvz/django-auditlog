@@ -281,7 +281,7 @@ class LogEntry(models.Model):
     )
     user_agent = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_("timestamp"))
-    additional_data = JSONField(
+    additional_data = models.JSONField(
         blank=True, null=True, verbose_name=_("additional data")
     )
 
