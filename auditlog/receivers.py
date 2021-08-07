@@ -75,7 +75,7 @@ def log_delete(sender, instance, **kwargs):
         )
 
         if hasattr(instance, 'org'):
-            print('post_delete - ' + str(instance.org))
+            print('post_delete - ' + instance._meta.model_name + str(instance.org))
 
         # TODO DRY
         log_created.send(
@@ -88,4 +88,4 @@ def log_delete(sender, instance, **kwargs):
 
 def log_pre_delete(sender, instance, **kwargs):
     if hasattr(instance, 'org'):
-        print('pre_delete - ' + str(instance.org))
+        print('pre_delete - ' + instance._meta.model_name + str(instance.org))
