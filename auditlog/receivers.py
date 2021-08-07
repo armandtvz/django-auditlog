@@ -2,7 +2,7 @@ import json
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
-from auditlog.signals import log_created
+from auditlog.signals import log_created, m2m_log_created
 
 
 def log_create(sender, instance, created, **kwargs):
