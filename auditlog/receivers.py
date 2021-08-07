@@ -22,10 +22,10 @@ def log_create(sender, instance, created, **kwargs):
         # TODO DRY
         log_created.send(
             sender=LogEntry,
-            instance=instance,
+            old_instance=None,
+            new_instance=instance,
             log_instance=log_entry,
         )
-
 
 def log_update(sender, instance, **kwargs):
     """
@@ -53,7 +53,8 @@ def log_update(sender, instance, **kwargs):
                 # TODO DRY
                 log_created.send(
                     sender=LogEntry,
-                    instance=instance,
+                    old_instance=old,
+                    new_instance=new,
                     log_instance=log_entry,
                 )
 
@@ -72,9 +73,14 @@ def log_delete(sender, instance, **kwargs):
             action=LogEntry.Action.DELETE,
             changes=json.dumps(changes),
         )
+
+        if hasattr(instance, 'org'):
+            print(instance.org)
+
         # TODO DRY
         log_created.send(
             sender=LogEntry,
-            instance=instance,
+            old_instance=instance,
+            new_instance=None,
             log_instance=log_entry,
         )
