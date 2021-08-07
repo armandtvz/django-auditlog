@@ -84,3 +84,8 @@ def log_delete(sender, instance, **kwargs):
             new_instance=None,
             log_instance=log_entry,
         )
+
+
+def log_pre_delete(sender, instance, **kwargs):
+    if hasattr(instance, 'org'):
+        print(instance.org)
