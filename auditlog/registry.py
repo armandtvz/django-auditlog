@@ -3,7 +3,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 from django.db.models import Model
 from django.db.models.base import ModelBase
 from django.db.models.signals import (
-    ModelSignal, post_delete, post_save, pre_save, pre_delete
+    ModelSignal, post_delete, post_save, pre_save
 )
 
 DispatchUID = Tuple[int, str, int]
@@ -32,8 +32,6 @@ class AuditlogModelRegistry(object):
             self._signals[pre_save] = log_update
         if delete:
             self._signals[post_delete] = log_delete
-
-        # self._signals[pre_delete] = log_pre_delete
 
         if custom is not None:
             self._signals.update(custom)
