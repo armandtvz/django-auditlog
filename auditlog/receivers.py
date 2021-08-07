@@ -84,3 +84,7 @@ def log_delete(sender, instance, **kwargs):
             new_instance=None,
             log_instance=log_entry,
         )
+
+
+def log_m2m_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    print('m2m_changed - ' + action + ' ' + str(instance))
