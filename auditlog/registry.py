@@ -33,7 +33,7 @@ class AuditlogModelRegistry(object):
         if delete:
             self._signals[post_delete] = log_delete
 
-        self._signals[pre_delete] = log_pre_delete
+        # self._signals[pre_delete] = log_pre_delete
 
         if custom is not None:
             self._signals.update(custom)
