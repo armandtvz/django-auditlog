@@ -23,7 +23,7 @@ def send_hook_on_roadmap_update(sender, instance, **kwargs):
         logger.warning(
             'Not allowed to change fields on LogEntry instance '
             '(except additional_data) after creation. Attempted to '
-            ' change {0}'.format(field)
+            'change "{0}"'.format(field)
         )
 
     if instance.pk:
@@ -49,8 +49,8 @@ def send_hook_on_roadmap_update(sender, instance, **kwargs):
             for field in fields:
                 old = getattr(obj, field)
                 new = getattr(instance, field)
-                if old == new:
-                    log_prevent_change('field')
+                if old != new:
+                    log_prevent_change(field)
 
 
 def log_create(sender, instance, created, **kwargs):
