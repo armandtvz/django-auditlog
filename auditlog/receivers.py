@@ -2,6 +2,7 @@ import json
 import logging
 
 from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
