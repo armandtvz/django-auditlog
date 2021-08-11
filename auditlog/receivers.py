@@ -20,7 +20,7 @@ def prevent_changes_to_log(sender, instance, **kwargs):
         # Changing any field except log.additional_data after initial
         # creation is not allowed. Prevent this, but fail silently.
         # Instead, just log the problem
-        logger.exception(
+        logger.warning(
             'Not allowed to change fields on LogEntry instance '
             '(except additional_data) after creation. Attempted to '
             'change "{field}" from "{old}" to "{new}"'.format(
