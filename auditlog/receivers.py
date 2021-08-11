@@ -1,8 +1,55 @@
 import json
+import logging
+
+from django.db.models.signals import pre_save
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
 from auditlog.signals import log_created, m2m_log_created
+
+
+logger = logging.getLogger(__name__)
+
+
+@receiver(pre_save, sender=LogEntry)
+def send_hook_on_roadmap_update(sender, instance, **kwargs):
+
+    def log_prevent_change(field=None):
+        # A field on LogEntry has changed
+        # Changing any field except log.additional_data after initial
+        # creation is not allowed. Prevent this, but fail silently.
+        # Instead, just log the problem
+        logger.warning(
+            'Not allowed to change fields on LogEntry instance '
+            '(except additional_data) after creation. Attempted to '
+            ' change {0}'.format(field)
+        )
+
+    if instance.pk:
+        obj = None
+        try:
+            obj = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            pass
+        else:
+            fields = [
+                'content_type',
+                'object_pk',
+                'object_id',
+                'object_repr',
+                'action',
+                'changes',
+                'actor',
+                'actor_repr',
+                'remote_addr',
+                'user_agent',
+                'timestamp',
+            ]
+            for field in fields:
+                old = getattr(obj, field)
+                new = getattr(instance, field)
+                if old == new:
+                    log_prevent_change('field')
 
 
 def log_create(sender, instance, created, **kwargs):
