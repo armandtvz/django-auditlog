@@ -1,6 +1,12 @@
 Usage
 =====
 
+.. note::
+   It is not possible to re-save a LogEntry object after creation except to
+   change the value of the `additional_data` field. Changes to all other
+   fields will be ignored and logged as warnings. Therefore, no exceptions
+   will be raised.
+
 .. py:currentmodule:: auditlog.models
 
 Manually logging changes
@@ -56,15 +62,15 @@ If you have field names on your models that aren't intuitive or user friendly yo
 during the `register()` call.
 
 .. code-block:: python
-    
+
     class MyModel(modelsModel):
         sku = models.CharField(max_length=20)
         version = models.CharField(max_length=5)
         product = models.CharField(max_length=50, verbose_name='Product Name')
         history = AuditLogHistoryField()
-        
+
     auditlog.register(MyModel, mapping_fields={'sku': 'Product No.', 'version': 'Product Revision'})
-    
+
 .. code-block:: python
 
     log = MyModel.objects.first().history.latest()
