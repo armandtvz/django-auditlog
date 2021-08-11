@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(pre_save, sender=LogEntry)
-def send_hook_on_roadmap_update(sender, instance, **kwargs):
+def prevent_changes_to_log(sender, instance, **kwargs):
 
     def log_prevent_change(field=None):
         # A field on LogEntry has changed
@@ -51,6 +51,7 @@ def send_hook_on_roadmap_update(sender, instance, **kwargs):
                 new = getattr(instance, field)
                 if old != new:
                     log_prevent_change(field)
+                    setattr(instance, field, old) # reset to old value
 
 
 def log_create(sender, instance, created, **kwargs):
