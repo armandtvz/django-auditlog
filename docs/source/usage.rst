@@ -7,6 +7,10 @@ Usage
    fields will be ignored and logged as warnings. Therefore, no exceptions
    will be raised.
 
+   This is not a complete solution to prevent log entries from being changed
+   or tampered with, but it is a deterrent. It could also prevent someone
+   from accidentally doing something they should not be doing.
+
 .. py:currentmodule:: auditlog.models
 
 Manually logging changes
