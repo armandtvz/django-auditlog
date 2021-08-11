@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @receiver(pre_save, sender=LogEntry)
 def prevent_changes_to_log(sender, instance, **kwargs):
 
-    def log_prevent_change(field=None):
+    def log_prevent_change(field, old, new):
         # A field on LogEntry has changed
         # Changing any field except log.additional_data after initial
         # creation is not allowed. Prevent this, but fail silently.
@@ -23,7 +23,11 @@ def prevent_changes_to_log(sender, instance, **kwargs):
         logger.warning(
             'Not allowed to change fields on LogEntry instance '
             '(except additional_data) after creation. Attempted to '
-            'change "{0}"'.format(field)
+            'change "{field}" from "{old}" to "{new}"'.format(
+                field=field,
+                old=old,
+                new=new,
+            )
         )
 
     if instance.pk:
@@ -50,7 +54,7 @@ def prevent_changes_to_log(sender, instance, **kwargs):
                 old = getattr(obj, field)
                 new = getattr(instance, field)
                 if old != new:
-                    log_prevent_change(field)
+                    log_prevent_change(field, old, new)
                     setattr(instance, field, old) # reset to old value
 
 

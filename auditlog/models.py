@@ -1,4 +1,5 @@
 import ast
+import logging
 import json
 
 from dateutil import parser
@@ -12,6 +13,9 @@ from django.db.models import Field, Q, QuerySet
 from django.utils import formats, timezone
 from django.utils.encoding import smart_str
 from django.utils.translation import ugettext_lazy as _
+
+
+logger = logging.getLogger(__name__)
 
 
 class LogEntryManager(models.Manager):
@@ -214,6 +218,19 @@ class LogEntryManager(models.Manager):
         if isinstance(pk, models.Model):
             pk = self._get_pk_value(pk)
         return pk
+
+    def bulk_update(self, objs, fields, batch_size=None):
+        """
+        LogEntry objects cannot be updated in bulk.
+        """
+        if fields:
+            if 'additional_data' not in fields:
+                logger.warning(
+                    'bulk_update for LogEntry objects prevented. '
+                    'Can only update "additional_data" field'
+                )
+                return None
+        return super().bulk_update(objs, fields, batch_size)
 
 
 class LogEntry(models.Model):
