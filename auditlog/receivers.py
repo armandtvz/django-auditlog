@@ -29,6 +29,7 @@ def prevent_changes_to_log(sender, instance, **kwargs):
                 new=new,
             ),
         )
+        raise Exception('LogEntry change prevented')
 
     if instance.pk:
         obj = None
