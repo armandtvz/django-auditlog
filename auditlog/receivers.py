@@ -12,7 +12,7 @@ from auditlog.signals import log_created, m2m_log_created
 
 logger = logging.getLogger(__name__)
 
-FAIL_SILENTLY = True
+PREVENT_CHANGE_FAIL_SILENTLY = True
 
 
 @receiver(pre_save, sender=LogEntry)
@@ -32,7 +32,7 @@ def prevent_changes_to_log(sender, instance, **kwargs):
                 new=new,
             ),
         )
-        if not FAIL_SILENTLY:
+        if not PREVENT_CHANGE_FAIL_SILENTLY:
             raise Exception('LogEntry change prevented')
 
     if instance.pk:

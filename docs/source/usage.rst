@@ -5,11 +5,12 @@ Usage
    It is not possible to re-save a LogEntry object after creation except to
    change the value of the `additional_data` field. Changes to all other
    fields will be ignored and logged as warnings. Therefore, no exceptions
-   will be raised.
+   will be raised. The same applies to the `LogEntry.objects.bulk_update`
+   method.
 
-   This is not a complete solution to prevent log entries from being changed
-   or tampered with, but it is a deterrent. It could also prevent someone
-   from accidentally doing something they should not be doing.
+   This is definitely not meant as a solution to tampering but rather just
+   a protection to prevent someone from accidentally doing something they
+   shouldn't be doing.
 
 .. py:currentmodule:: auditlog.models
 
