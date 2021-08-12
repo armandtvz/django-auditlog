@@ -3,6 +3,7 @@ import logging
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.encoding import smart_str
 
 from auditlog.diff import model_instance_diff
 from auditlog.models import LogEntry
@@ -10,6 +11,8 @@ from auditlog.signals import log_created, m2m_log_created
 
 
 logger = logging.getLogger(__name__)
+
+FAIL_SILENTLY = True
 
 
 @receiver(pre_save, sender=LogEntry)
@@ -29,7 +32,8 @@ def prevent_changes_to_log(sender, instance, **kwargs):
                 new=new,
             ),
         )
-        raise Exception('LogEntry change prevented')
+        if not FAIL_SILENTLY:
+            raise Exception('LogEntry change prevented')
 
     if instance.pk:
         obj = None
@@ -54,6 +58,11 @@ def prevent_changes_to_log(sender, instance, **kwargs):
             for field in fields:
                 old = getattr(obj, field)
                 new = getattr(instance, field)
+
+                if field == 'object_pk':
+                    if isinstance(new, int):
+                        new = smart_str(new)
+
                 if old != new:
                     log_prevent_change(field, old, new)
                     setattr(instance, field, old) # reset to old value
