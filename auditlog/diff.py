@@ -151,7 +151,7 @@ def model_instance_diff(old, new):
 
         if old_value != new_value:
             if model_fields["sensitive_fields"]:
-                if field in model_fields["sensitive_fields"]:
+                if field.name in model_fields["sensitive_fields"]:
                     old_value = "<redacted>"
                     new_value = "<redacted>"
             diff[field.name] = (smart_str(old_value), smart_str(new_value))
