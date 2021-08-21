@@ -61,6 +61,16 @@ For example, to exclude the field ``last_updated``, use::
 
     Excluding fields
 
+**Redacting values for fields with sensitive values**
+
+If you need a change to a field to be logged but don't want to log the actual
+changed values: set the `sensitive_fields` argument to a list of fields that
+need to be redacted.
+
+For example, to set a sensitive field named `password`, use::
+
+    auditlog.register(MyModel, sensitive_fields=['password'])
+
 **Mapping fields**
 
 If you have field names on your models that aren't intuitive or user friendly you can include a dictionary of field mappings

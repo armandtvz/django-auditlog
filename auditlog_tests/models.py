@@ -123,6 +123,16 @@ class SimpleExcludeModel(models.Model):
     history = AuditlogHistoryField()
 
 
+class SimpleSensitiveFieldsModel(models.Model):
+    """
+    A simple model used for register's sensitive_fields kwarg
+    """
+    label = models.CharField(max_length=100)
+    sensitive_text = models.TextField(blank=True)
+
+    history = AuditlogHistoryField()
+
+
 class SimpleMappingModel(models.Model):
     """
     A simple model used for register's mapping_fields kwarg
@@ -248,6 +258,7 @@ m2m_only_auditlog.register(
     FirstManyRelatedModel, include_fields=["pk", "history"], m2m_fields={"related"}
 )
 auditlog.register(SimpleExcludeModel, exclude_fields=["text"])
+auditlog.register(SimpleSensitiveFieldsModel, sensitive_fields=["sensitive_text"])
 auditlog.register(SimpleMappingModel, mapping_fields={"sku": "Product No."})
 auditlog.register(AdditionalDataIncludedModel)
 auditlog.register(DateTimeFieldModel)

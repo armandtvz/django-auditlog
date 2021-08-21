@@ -329,6 +329,29 @@ class SimpeExcludeModelTest(TestCase):
         self.assertTrue(sem.history.count() == 2, msg="There are two log entries")
 
 
+class SimpleSensitiveFieldsModelTest(TestCase):
+    """Values for fields in sensitive_fields must be redacted"""
+
+    def test_register_sensitive_fields(self):
+        obj = SimpleSensitiveFieldsModel(
+            label="Sensitive model", sensitive_text="Looong text"
+        )
+        obj.save()
+
+        self.assertTrue(
+            obj.history.latest().changes_dict["sensitive_text"][1] == "<redacted>",
+            msg="The diff function redacts sensitive text on create.",
+        )
+
+        # Change text, record
+        obj.sensitive_text = "Sensitive text"
+        obj.save()
+        self.assertTrue(
+            obj.history.latest().changes_dict["sensitive_text"][1] == "<redacted>",
+            msg="The diff function redacts sensitive text on update.",
+        )
+
+
 class SimpleMappingModelTest(TestCase):
     """Diff displays fields as mapped field names where available through mapping_fields"""
 
