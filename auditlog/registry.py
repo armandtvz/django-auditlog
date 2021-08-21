@@ -49,6 +49,7 @@ class AuditlogModelRegistry(object):
         model: ModelBase = None,
         include_fields: Optional[List[str]] = None,
         exclude_fields: Optional[List[str]] = None,
+        sensitive_fields: Optional[List[str]] = None,
         mapping_fields: Optional[Dict[str, str]] = None,
         m2m_fields: Optional[Collection[str]] = None,
     ):
@@ -58,6 +59,7 @@ class AuditlogModelRegistry(object):
         :param model: The model to register.
         :param include_fields: The fields to include. Implicitly excludes all other fields.
         :param exclude_fields: The fields to exclude. Overrides the fields to include.
+        :param sensitive_fields: The fields to scrub. When you want to log that something has changed but not show the values.
         :param mapping_fields: Mapping from field names to strings in diff.
         :param m2m_fields: The fields to map as many to many.
 
@@ -65,10 +67,16 @@ class AuditlogModelRegistry(object):
 
         if include_fields is None:
             include_fields = []
+
         if exclude_fields is None:
             exclude_fields = []
+
+        if sensitive_fields is None:
+            sensitive_fields = []
+
         if mapping_fields is None:
             mapping_fields = {}
+
         if m2m_fields is None:
             m2m_fields = set()
 
@@ -80,6 +88,7 @@ class AuditlogModelRegistry(object):
             self._registry[cls] = {
                 "include_fields": include_fields,
                 "exclude_fields": exclude_fields,
+                "sensitive_fields": sensitive_fields,
                 "mapping_fields": mapping_fields,
                 "m2m_fields": m2m_fields,
             }
@@ -129,6 +138,7 @@ class AuditlogModelRegistry(object):
         return {
             "include_fields": list(self._registry[model]["include_fields"]),
             "exclude_fields": list(self._registry[model]["exclude_fields"]),
+            "sensitive_fields": list(self._registry[model]["sensitive_fields"]),
             "mapping_fields": dict(self._registry[model]["mapping_fields"]),
         }
 
