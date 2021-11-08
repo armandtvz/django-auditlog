@@ -5,14 +5,13 @@ from functools import partial
 from django.apps import apps
 from django.conf import settings
 from django.db.models.signals import pre_save
-from django.utils.deprecation import MiddlewareMixin
 
 from auditlog.models import LogEntry
 
 threadlocal = threading.local()
 
 
-class AuditlogMiddleware(MiddlewareMixin):
+class AuditlogMiddleware:
     """
     Middleware to couple the request's user to log items. This is accomplished by currying the signal receiver with the
     user from the request (or None if the user is not authenticated).
